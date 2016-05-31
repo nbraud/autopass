@@ -66,10 +66,6 @@ class OpenStruct
     self
   end
 
-  def merge(other)
-    Marshal.load(Marshal.dump(self)).merge!(other)
-  end
-
   def reverse_merge!(other)
     other.each_pair do |key, value|
       own_value = self[key]
@@ -82,10 +78,6 @@ class OpenStruct
                   end
     end
     self
-  end
-
-  def reverse_merge(other)
-    Marshal.load(Marshal.dump(self)).reverse_merge!(other)
   end
 end
 
