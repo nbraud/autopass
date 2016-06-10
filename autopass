@@ -224,21 +224,15 @@ class Entry
   end
 
   def window_id
-    # try window
-    output = search_window_id(attributes.window)
-    return output.to_i if output.lines.size == 1
-
-    # try url
-    output = search_window_id(Regexp.escape(attributes.url))
-    return output.to_i if output.lines.size == 1
-
-    # try window with browser
-    output = search_window_id("#{attributes.window}.*#{Regexp.union(BROWSERS)}")
-    return output.to_i if output.lines.size == 1
-
-    # try name
-    output = search_window_id(Regexp.escape(name))
-    return output.to_i if output.lines.size == 1
+    [
+      attributes.window, # try window
+      Regexp.escape(attributes.url), # try url
+      "#{attributes.window}.*#{Regexp.union(BROWSERS)}", # try window with browser
+      Regexp.escape(name) # try name
+    ].each do |regex|
+      output = search_window_id(regex)
+      return output.to_i if output.lines.size == 1
+    end
 
     select_window_id_by_user!
   end
