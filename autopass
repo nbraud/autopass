@@ -226,9 +226,9 @@ class Entry
   def window_id
     [
       attributes.window, # try window
-      Regexp.escape(attributes.url), # try url
+      Regexp.escape(attributes.url || ''), # try url
       "#{attributes.window}.*#{Regexp.union(BROWSERS)}", # try window with browser
-      Regexp.escape(name) # try name
+      Regexp.escape(name || '') # try name
     ].each do |regex|
       output = search_window_id(regex)
       return output.to_i if output.lines.size == 1
