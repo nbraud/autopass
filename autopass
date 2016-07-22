@@ -293,11 +293,13 @@ class PassBackend
   end
 
   def sorted_entries(focused_window)
-    @entries.sort_by do |entry|
-      match = entry.match(focused_window)
-      match ? "\0" * focused_window.sub(match[0], '').size : entry
+    title = focused_window.downcase
+    result = @entries.sort_by do |entry|
+      entry = entry.downcase
+      match = entry.match(title)
+      match ? "\0" * title.sub(match[0], '').size : entry
     end
-    @entries
+    result
   end
 end
 
