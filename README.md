@@ -1,6 +1,29 @@
 # Autopass
 
-A rofi frontend for pass
+A safer/secure rofi frontend for pass, forked from jreinert/autopass
+
+## Motivation for the fork
+
+In jreinert/autopass#14, I argued against the use of a cache of all
+the pass encrypted data, because:
+
+- This is a security liability:
+  - somebody able to write your cache file gets code execution;
+    the default location used to be `/tmp`...
+  - this exposes autopass to a variety of cryptographic attack,
+    such as oracle attacks; while this might not be immediately
+    exploitable, having `autopass` perform security-sensitive
+    operations is insane design.
+- This is slow in many usecases:
+  - slow disk access (`/home` in NFS, for instance),
+    since the `pass` DB directory is walked for recent changes;
+  - slow decryption (key kept on smartcard), since `autopass`
+    decrypts its cache every time it is started.
+
+The original author acknowleged none of those points except the code
+execution... which they “solved” by moving the default location to
+`~/.cache`.
+
 
 ## Features
 
