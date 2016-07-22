@@ -36,15 +36,10 @@ execution... which they “solved” by moving the default location to
 
 ## Installation
 
-### ArchLinux
+Copy or (preferably) symlink autopass from this repo somewhere
+in your `${PATH}`.
 
-Get autopass-git with your favorite aur helper
-
-### Other systems
-
-Copy autopass from this repo somewhere in your path.
-
-#### Dependencies:
+### Dependencies:
 
 - [pass](https://github.com/zx2c4/password-store)
 - [rofi](https://github.com/DaveDavenport/rofi)
@@ -53,10 +48,18 @@ Copy autopass from this repo somewhere in your path.
 - [xwininfo](http://www.xfree86.org/4.2.0/xwininfo.1.html)
 - [xclip](http://sourceforge.net/projects/xclip/')
 
-Optionally you can install one of the following browser extensions for better autotype. These add your current URL to
-your title (and window title) which can be matched by the URL entry in your password entry.
-- Chrom(e|ium) extension [url-in-title](https://chrome.google.com/webstore/detail/url-in-title/ignpacbgnbnkaiooknalneoeladjnfgb)
-- Firefox extension [add-url-to-window-title](https://addons.mozilla.org/en-US/firefox/addon/add-url-to-window-title/) ([Repository](https://github.com/erichgoldman/add-url-to-window-title))
+### Browser integration
+
+Optionally, you may install one of the following browser extensions for
+better autotype. These add your current URL to the window title,
+which can be matched by the password entry's name or URL entry:
+
+- Chrom(e|ium) extension [url-in-title]
+- Firefox extension [add-url-to-window-title]
+  ([Repository](https://github.com/erichgoldman/add-url-to-window-title))
+
+[url-in-title]: https://chrome.google.com/webstore/detail/url-in-title/ignpacbgnbnkaiooknalneoeladjnfgb
+[add-url-to-window-title]: https://addons.mozilla.org/en-US/firefox/addon/add-url-to-window-title/
 
 ## Usage
 
