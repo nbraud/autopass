@@ -84,7 +84,6 @@ Edit them with `pass edit` and add additional properties in the following syntax
 my_super_secret_password
 ---
 user: username
-url: https://example.com/login
 some_other_property: some value
 autotype: [user, ':tab', some_other_property, ':tab', pass, ':tab', ':otp']
 autotype_1: [user]
