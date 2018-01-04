@@ -138,7 +138,9 @@ class Entry
   def initialize(name)
     content = `pass show #{Shellwords.escape(name)}`
     pass = content.lines.first.chomp
-    yaml = (content.lines[1..-1] || []).join
+    yaml = (content.lines[1..-1] || [])
+               .select { |line| line =~ /^.+:\s.+/ }
+               .join
     begin
       metadata = expand_config(YAML.load(yaml) || {})
     rescue Psych::SyntaxError => e
