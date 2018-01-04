@@ -5,6 +5,8 @@ require 'fileutils'
 require 'shellwords'
 require 'ostruct'
 require 'optionparser'
+require 'uri'
+require 'cgi'
 
 begin
   require 'rotp'
@@ -138,7 +140,10 @@ class Entry
   def initialize(name)
     content = `pass show #{Shellwords.escape(name)}`
     pass = content.lines.first.chomp
-    yaml = (content.lines[1..-1] || []).join
+    yaml = (content.lines[1..-1] || [])
+               .select { |line| line =~ /^.+:\s.+/ }
+               .join
+    otp_uri = content.lines.select { |line| line.start_with?("otpauth://") }.first
     begin
       metadata = expand_config(YAML.load(yaml) || {})
     rescue Psych::SyntaxError => e
@@ -150,6 +155,9 @@ class Entry
     end
     begin
       metadata.merge!(CONFIG.password_key => pass)
+      if otp_uri
+        metadata.merge!(parse_otp_uri(otp_uri))
+      end
     rescue NoMethodError => e
       metadata = OpenStruct.new(error: true)
       metadata.error_message = e.message
@@ -197,7 +205,9 @@ class Entry
       $stderr.puts([
         'No OTP secret found for this entry.',
         'Make sure your entry contains an attribute `otp_secret` like the following:',
-        'otp_secret: your_otp_secret'
+        'otp_secret: your_otp_secret',
+        'or',
+        'otpauth://totp/<display name>?secret=<secret>'
       ])
       notify('No OTP secret found for this entry.', :critical)
       exit 1
@@ -300,6 +310,28 @@ class Entry
     end
     number.to_i
   end
+
+  def parse_otp_uri(otp_uri)
+    uri = URI.parse(otp_uri)
+    params = CGI.parse(uri.query)
+    otp_config = {}
+    otp_config.merge!('otp_type' => uri.host)
+    otp_config.merge!(parse_otp_param(params, 'algorithm'))
+    otp_config.merge!(parse_otp_param(params, 'digits'))
+    otp_config.merge!(parse_otp_param(params, 'period'))
+    otp_config.merge!(parse_otp_param(params, 'secret'))
+    otp_config
+  end
+
+  def parse_otp_param(query, key)
+    param = query.fetch(key, []).first
+    if param
+      {"otp_#{key}" => param}
+    else
+      {}
+    end
+  end
+
 end
 
 class PassBackend
